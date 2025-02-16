@@ -36,3 +36,4 @@ module.exports = {
     return interaction.reply({ content: `✅ ${targetUser.tag}님이 킥되었습니다. (사유: ${reason})` });
   }
 };
+

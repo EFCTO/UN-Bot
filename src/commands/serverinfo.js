@@ -10,7 +10,7 @@ module.exports = {
     
     const embed = new EmbedBuilder()
       .setTitle(`${guild.name} - Server Information`)
-      .setColor('Random')
+      .setColor('#00FFFF')
       .addFields(
         { name: '서버이름', value: guild.name, inline: true },
         { name: '서버 ID', value: guild.id, inline: true },

@@ -1,84 +1,82 @@
 require('dotenv').config();
-const { REST, Routes, ApplicationCommandOptionType } = require('discord.js');
+const { REST, Routes, SlashCommandBuilder } = require('discord.js');
 
-// 슬래시 명령어 등록 내용
 const commands = [
-  {
-    name: 'serverinfo',
-    description: 'Shows information about the server.',
-  },
-  {
-    name: 'verify',
-    description: 'Verifies a user and gives them a role.',
-    options: [
-      {
-        name: 'target',
-        type: ApplicationCommandOptionType.User,
-        description: 'The user to verify',
-        required: true, // 필수로 설정
-      },
-      {
-        name: 'role',
-        type: ApplicationCommandOptionType.Role,
-        description: 'The role to assign to the user',
-        required: true, // 필수로 설정
-      },
-    ],
-  },
-  {
-    name: 'kick',
-    description: 'Kick a user from the server.',
-    options: [
-      {
-        name: 'target',
-        type: ApplicationCommandOptionType.User,
-        description: 'The user to kick',
-        required: true,
-      },
-      {
-        name: 'reason',
-        type: ApplicationCommandOptionType.String,
-        description: 'The reason for kicking the user',
-        required: false,
-      },
-    ],
-  },
-  {
-    name: 'ban',
-    description: 'Ban a user from the server.',
-    options: [
-      {
-        name: 'target',
-        type: ApplicationCommandOptionType.User,
-        description: 'The user to ban',
-        required: true,
-      },
-      {
-        name: 'reason',
-        type: ApplicationCommandOptionType.String,
-        description: 'The reason for banning the user',
-        required: false,
-      },
-    ],
-  },
-];
+  new SlashCommandBuilder()
+    .setName('command')
+    .setDescription('Shows the list of commands.'),
+
+  new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Checking the bots API ping.'),
+
+  new SlashCommandBuilder()
+    .setName('serverinfo')
+    .setDescription('Shows information about the server.'),
+
+  new SlashCommandBuilder()
+    .setName('role')
+    .setDescription('Assign a role to a user.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('Select a user to assign the role to.')
+        .setRequired(true))
+    .addRoleOption(option =>
+      option.setName('role')
+        .setDescription('Select the role to assign to the user.')
+        .setRequired(true)),
+
+  new SlashCommandBuilder()
+    .setName('kick')
+    .setDescription('Kick a user from the server.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('The user to kick')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('reason')
+        .setDescription('The reason for kicking the user')
+        .setRequired(false)),
+
+  new SlashCommandBuilder()
+    .setName('ban')
+    .setDescription('Ban a user from the server.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('The user to ban')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('reason')
+        .setDescription('The reason for banning the user')
+        .setRequired(false))
+].map(command => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
 
 (async () => {
   try {
-    console.log('Registering slash commands...');
+    console.log('Deleting all existing global slash commands...');
+
+    const existingCommands = await rest.get(Routes.applicationCommands(process.env.CLIENT_ID));
+    
+    if (existingCommands.length > 0) {
+      for (const command of existingCommands) {
+        await rest.delete(Routes.applicationCommand(process.env.CLIENT_ID, command.id));
+        console.log(`Deleted command: ${command.name}`);
+      }
+    } else {
+      console.log('No existing commands found.');
+    }
+
+    console.log('Registering new global slash commands...');
 
     await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID
-      ),
+      Routes.applicationCommands(process.env.CLIENT_ID),
       { body: commands }
     );
 
-    console.log('Slash commands were registered successfully!');
+    console.log('New slash commands were registered globally!');
   } catch (error) {
-    console.error('Error occurred:', error);
+    console.error('Error occurred while registering commands:', error);
   }
 })();
