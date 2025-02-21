@@ -1,4 +1,4 @@
-// Mention-response.js
+
 const responses = [
     "`/(명령어)`로 명령어를 사용해보세요!",
     "왜 부르셨나요?",
