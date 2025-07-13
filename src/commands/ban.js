@@ -5,7 +5,7 @@ module.exports = {
     .setName('ban')
     .setDescription('사용자를 밴합니다.')
     .addUserOption(option =>
-      option.setName('target')
+      option.setName('target')  
         .setDescription('밴할 사용자')
         .setRequired(true))
     .addStringOption(option =>
@@ -46,3 +46,4 @@ module.exports = {
     }
   }
 };
+

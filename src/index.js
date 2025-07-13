@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 const { Client, IntentsBitField } = require('discord.js');
-const fs = require('fs');
+const fs = require('fs'); 
 const path = require('path');
 
 const client = new Client({
@@ -14,21 +14,37 @@ const client = new Client({
   ],
 });
 
+let step = 0;
+const loadingFrames = [
+  '[UN-bot] - v2.8 실행중...',
+  '[UN-bot] - v2.8 실행중..',
+  '[UN-bot] - v2.8 실행중.'
+];
+
+let isReady = false; 
+const loadingInterval = setInterval(() => {
+  if (isReady) return; 
+
+  console.clear();
+  console.log(loadingFrames[step % loadingFrames.length]);
+  step++;
+}, 500);
 
 client.once('ready', (c) => {
+  isReady = true;         
+  clearInterval(loadingInterval);
+  console.clear();       
+  console.log('[UN-bot] - v2.8 실행완료됨! ✅');
   console.log(`✅ ${c.user.tag} is online.`);
 
- 
   client.user.setPresence({
     activities: [
-      {
-        name: '아무거나', 
-        type: 0,
-      },
+      { name: '아무거나', type: 0 },
     ],
     status: 'online',
   });
 });
+
 
 
 const commandsPath = path.join(__dirname, 'commands');
@@ -70,6 +86,9 @@ client.on('messageCreate', message => {
   }
 });
 
-
 client.login(process.env.BOT_TOKEN);
+
+console.log('[UN-bot] - v2.8 실행중...')
+
+
 

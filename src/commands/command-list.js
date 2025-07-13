@@ -1,10 +1,9 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  data: {
-    name: 'command',
-    description: 'Shows the list of commands.',
-  },
+  data: new SlashCommandBuilder()
+    .setName('command')
+    .setDescription('Shows the list of commands.'),
   async execute(interaction) {
     const guild = interaction.guild;
     

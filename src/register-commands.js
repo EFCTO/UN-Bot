@@ -8,7 +8,7 @@ const commands = [
 
   new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Checking the bots API ping.'),
+    .setDescription('Checking the bot\'s API ping.'),
 
   new SlashCommandBuilder()
     .setName('serverinfo')
@@ -48,7 +48,35 @@ const commands = [
     .addStringOption(option =>
       option.setName('reason')
         .setDescription('The reason for banning the user')
-        .setRequired(false))
+        .setRequired(false)),
+
+  new SlashCommandBuilder()
+    .setName('warning')
+    .setDescription('Issue a warning to a user.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('The user to warn.')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('reason')
+        .setDescription('The reason for the warning.')
+        .setRequired(false)),
+
+  new SlashCommandBuilder()
+    .setName('warning-check')
+    .setDescription('Check a user\'s warning count.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('The user to check.')
+        .setRequired(true)),
+
+  new SlashCommandBuilder()
+    .setName('warning-deduct')
+    .setDescription('Deduct a warning from a user.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('The user whose warning you want to deduct.')
+        .setRequired(true)),
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);

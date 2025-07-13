@@ -1,22 +1,17 @@
+const { SlashCommandBuilder } = require('discord.js');
+
 module.exports = {
-  data: {
-    name: 'role',
-    description: 'You can assign roles to server members.',
-    options: [
-      {
-        name: 'target', 
-        type: 'USER',  
-        description: 'Select a user to assign the role to.',
-        required: true,
-      },
-      {
-        name: 'role',
-        type: 'ROLE', 
-        description: 'Select the role to assign.',
-        required: true,
-      },
-    ],
-  },
+  data: new SlashCommandBuilder()
+    .setName('role')
+    .setDescription('You can assign roles to server members.')
+    .addUserOption(option =>
+      option.setName('target')
+        .setDescription('Select a user to assign the role to.')
+        .setRequired(true))
+    .addRoleOption(option =>
+      option.setName('role')
+        .setDescription('Select the role to assign.')
+        .setRequired(true)),
   async execute(interaction) {
     
     const targetUser = interaction.options.getMember('target');
@@ -45,3 +40,5 @@ module.exports = {
     }
   },
 };
+
+
